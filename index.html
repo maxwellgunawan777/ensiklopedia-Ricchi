@@ -36,11 +36,13 @@
         </div>
         
         <div class="flex items-center gap-3">
+            <!-- Language Toggle -->
             <button onclick="window.toggleLanguage()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full border-2 border-slate-200 transition active:scale-95">
                 <span id="lang-flag" class="text-xl">🇮🇩</span>
                 <span id="lang-code" class="text-xs font-bold text-slate-600">ID</span>
             </button>
 
+            <!-- Music Toggle -->
             <button id="music-btn" onclick="window.toggleMusic()" class="bg-sky-100 text-sky-500 p-2 rounded-full hover:bg-sky-200 transition relative active:scale-95">
                 <span id="music-icon">🔇</span>
             </button>
@@ -122,7 +124,7 @@
 
     <!-- BACKGROUND MUSIC -->
     <audio id="bg-music" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_c44f4c8114.mp3?filename=happy-kids-124837.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3" type="audio/mpeg">
     </audio>
 
     <script type="module">
@@ -208,8 +210,11 @@
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             renderCards();
-            document.getElementById('search-bar').addEventListener('input', (e) => handleSearch(e.target.value));
-            document.getElementById('search-bar-mobile').addEventListener('input', (e) => handleSearch(e.target.value));
+            const sDesktop = document.getElementById('search-bar');
+            const sMobile = document.getElementById('search-bar-mobile');
+            
+            if (sDesktop) sDesktop.addEventListener('input', (e) => window.handleSearch(e.target.value));
+            if (sMobile) sMobile.addEventListener('input', (e) => window.handleSearch(e.target.value));
         });
 
         window.toggleLanguage = function() {
@@ -263,7 +268,11 @@
         window.renderCards = function() {
             const container = document.getElementById('cards-grid');
             container.innerHTML = '';
-            const term = (document.getElementById('search-bar').value || document.getElementById('search-bar-mobile').value).toLowerCase();
+            
+            // Handle potential null for search elements if running in limited context
+            const sDesktop = document.getElementById('search-bar');
+            const sMobile = document.getElementById('search-bar-mobile');
+            const term = ((sDesktop ? sDesktop.value : '') || (sMobile ? sMobile.value : '')).toLowerCase();
             
             const filteredData = database.filter(item => {
                 const data = currentLang === 'id' ? item.id_data : item.en_data;
@@ -307,7 +316,7 @@
             document.getElementById('modal-emoji').textContent = item.emoji;
             document.getElementById('modal-title').textContent = data.title;
             document.getElementById('modal-category').textContent = catName;
-            document.getElementById('modal-header-bg').className = `relative ${style.color} p-6 pb-12 text-center transition-colors duration-500`;
+            document.getElementById('modal-header-bg').className = `relative ${style.header} p-6 pb-12 text-center transition-colors duration-500`;
             
             // Render Facts List
             const listContainer = document.getElementById('modal-content-list');
@@ -326,7 +335,7 @@
                 const btn = document.createElement('button');
                 btn.className = "w-full text-left p-3 rounded-xl border-2 border-slate-200 text-sm font-bold text-slate-600 hover:bg-sky-50 hover:border-sky-300 transition active:scale-95";
                 btn.textContent = opt;
-                btn.onclick = () => checkAnswer(idx, data.quiz.ans, btn);
+                btn.onclick = () => window.checkAnswer(idx, data.quiz.ans, btn);
                 qContainer.appendChild(btn);
             });
 
@@ -344,14 +353,11 @@
             window.speechSynthesis.cancel();
             
             const data = currentLang === 'id' ? currentItem.id_data : currentItem.en_data;
-            // Read intro + list facts
-            const textToRead = `${data.title}. ${data.list.join(". ")}`;
-            
-            const u = new SpeechSynthesisUtterance(textToRead);
+            const u = new SpeechSynthesisUtterance(data.title + ". " + data.content);
             u.lang = currentLang === 'id' ? 'id-ID' : 'en-US';
             u.rate = 0.9;
             
-            // Select voice
+            // Auto select voice
             const voices = window.speechSynthesis.getVoices();
             if (currentLang === 'en') {
                 u.voice = voices.find(v => v.lang.includes('en-US')) || null;
@@ -363,19 +369,19 @@
             window.speechSynthesis.speak(u);
         }
 
-        function checkAnswer(sel, cor, btn) {
+        window.checkAnswer = function(sel, cor, btn) {
             const feedback = document.getElementById('quiz-feedback');
             const l = labels[currentLang];
             Array.from(document.getElementById('quiz-options').children).forEach(b => b.disabled = true);
             feedback.classList.remove('hidden');
             
             if (sel === cor) {
-                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+                btn.className = "w-full text-left p-3 rounded-xl border-2 bg-green-100 border-green-500 text-green-700 font-bold text-sm";
                 feedback.textContent = l.correct;
                 feedback.className = "mt-3 text-center font-bold text-sm text-green-600 animate-bounce";
                 confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
             } else {
-                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                btn.className = "w-full text-left p-3 rounded-xl border-2 bg-red-100 border-red-500 text-red-700 font-bold text-sm";
                 feedback.textContent = l.wrong;
                 feedback.className = "mt-3 text-center font-bold text-sm text-red-500";
             }

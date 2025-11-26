@@ -23,7 +23,7 @@
         @keyframes pulseMusic { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
     </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col overflow-hidden select-none">
 
     <!-- HEADER -->
     <header class="bg-white p-4 shadow-md z-10 border-b-4 border-sky-200 shrink-0 flex justify-between items-center">
@@ -31,128 +31,134 @@
             <span class="text-3xl">🚀</span>
             <div>
                 <h1 id="app-title" class="text-xl md:text-2xl font-judul text-sky-600 tracking-wide">ENSIKLOPEDIA CILIK</h1>
-                <p id="app-subtitle" class="text-xs text-slate-400 font-bold">Jelajahi 100 Fakta Dunia!</p>
+                <p id="app-subtitle" class="text-xs text-slate-400 font-bold">Jelajahi Pengetahuan Dunia!</p>
             </div>
         </div>
         
         <div class="flex items-center gap-3">
-            <!-- Language Toggle -->
-            <button onclick="toggleLanguage()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full border-2 border-slate-200 transition">
+            <button onclick="window.toggleLanguage()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full border-2 border-slate-200 transition active:scale-95">
                 <span id="lang-flag" class="text-xl">🇮🇩</span>
                 <span id="lang-code" class="text-xs font-bold text-slate-600">ID</span>
             </button>
 
-            <button id="music-btn" onclick="toggleMusic()" class="bg-sky-100 text-sky-500 p-2 rounded-full hover:bg-sky-200 transition relative">
+            <button id="music-btn" onclick="window.toggleMusic()" class="bg-sky-100 text-sky-500 p-2 rounded-full hover:bg-sky-200 transition relative active:scale-95">
                 <span id="music-icon">🔇</span>
             </button>
             
             <div class="hidden md:block relative w-64">
-                <input type="text" id="search-bar" placeholder="Cari..." class="w-full pl-10 pr-4 py-2 rounded-full border-2 border-slate-200 focus:border-sky-400 focus:outline-none text-sm font-bold">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                <input type="text" id="search-bar" placeholder="🔍 Cari pengetahuan..." class="w-full pl-10 pr-4 py-2 rounded-full border-2 border-slate-200 focus:border-sky-400 focus:outline-none text-sm font-bold bg-white">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sky-300">🔍</span>
             </div>
         </div>
     </header>
 
     <!-- SEARCH MOBILE -->
     <div class="md:hidden p-3 bg-sky-50 shrink-0">
-        <input type="text" id="search-bar-mobile" placeholder="🔍 Cari..." class="w-full px-4 py-2 rounded-full border border-sky-200 text-sm shadow-sm">
+        <input type="text" id="search-bar-mobile" placeholder="🔍 Cari pengetahuan..." class="w-full px-4 py-2 rounded-full border border-sky-200 text-sm shadow-sm">
     </div>
 
     <!-- FILTER -->
     <div class="py-3 px-4 flex gap-2 overflow-x-auto shrink-0 no-scrollbar bg-sky-50/50">
-        <button onclick="filterCategory('all')" id="btn-all" class="pill-active px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">Semua</button>
-        <button onclick="filterCategory('antariksa')" id="btn-antariksa" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🪐 Antariksa</button>
-        <button onclick="filterCategory('hewan')" id="btn-hewan" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🦁 Hewan</button>
-        <button onclick="filterCategory('tubuh')" id="btn-tubuh" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🧠 Tubuh</button>
-        <button onclick="filterCategory('alam')" id="btn-alam" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🌋 Alam</button>
+        <button onclick="window.filterCategory('all')" id="btn-all" class="pill-active px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">Semua</button>
+        <button onclick="window.filterCategory('antariksa')" id="btn-antariksa" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🪐 Antariksa</button>
+        <button onclick="window.filterCategory('hewan')" id="btn-hewan" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🦁 Hewan</button>
+        <button onclick="window.filterCategory('tubuh')" id="btn-tubuh" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🧠 Tubuh</button>
+        <button onclick="window.filterCategory('alam')" id="btn-alam" class="pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors">🌋 Alam</button>
     </div>
 
-    <!-- CONTENT -->
+    <!-- KONTEN UTAMA -->
     <main id="content-area" class="flex-grow overflow-y-auto p-4 pb-20">
-        <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto"></div>
-        <div id="empty-state" class="hidden flex flex-col items-center justify-center mt-10 text-slate-400">
-            <span class="text-5xl mb-2">🤔</span>
-            <p id="empty-msg">Wah, fakta itu belum ada.</p>
+        <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            <!-- Kartu Generated Here -->
+        </div>
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center mt-20 text-slate-400">
+            <span class="text-6xl mb-4 grayscale opacity-50">🛸</span>
+            <p id="empty-msg" class="font-bold text-lg">Wah, fakta itu belum ada.</p>
         </div>
     </main>
 
-    <!-- MODAL -->
-    <div id="detail-modal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-end md:items-center justify-center backdrop-blur-sm">
+    <!-- MODAL DETAIL -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-end md:items-center justify-center backdrop-blur-sm transition-opacity duration-300">
         <div class="bg-white w-full md:max-w-2xl md:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden modal-enter flex flex-col max-h-[90vh]">
-            <div class="relative bg-sky-100 p-6 pb-10 text-center">
-                <button onclick="closeModal()" class="absolute top-4 right-4 bg-white/50 hover:bg-white rounded-full p-2 text-slate-600 transition">✕</button>
-                <div id="modal-emoji" class="text-8xl drop-shadow-md transform hover:scale-110 transition duration-300 cursor-pointer">☀️</div>
-                <h2 id="modal-title" class="text-3xl font-judul text-sky-800 mt-4">Matahari</h2>
-                <span id="modal-category" class="inline-block bg-white/60 px-3 py-1 rounded-full text-xs font-bold text-sky-600 mt-2 uppercase tracking-wider">Antariksa</span>
+            
+            <!-- Header Modal -->
+            <div id="modal-header-bg" class="relative bg-sky-100 p-6 pb-12 text-center transition-colors duration-500">
+                <button onclick="window.closeModal()" class="absolute top-4 right-4 bg-black/10 hover:bg-black/20 rounded-full p-2 text-slate-700 transition active:scale-90 font-bold z-20">✕</button>
+                <div id="modal-emoji" class="text-8xl drop-shadow-xl transform hover:scale-110 transition duration-300 cursor-pointer filter">☀️</div>
+                <h2 id="modal-title" class="text-3xl font-judul text-slate-800 mt-4 drop-shadow-sm">Judul</h2>
+                <span id="modal-category" class="inline-block bg-white/80 px-3 py-1 rounded-full text-xs font-bold text-slate-600 mt-2 uppercase tracking-wider shadow-sm">Kategori</span>
             </div>
 
-            <div class="p-6 overflow-y-auto flex-grow bg-white relative -mt-6 rounded-t-3xl">
-                <div class="flex justify-end -mt-10 mb-2 relative z-10">
-                    <button onclick="readContent()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm transition active:scale-95">
+            <!-- Body Modal -->
+            <div class="p-6 overflow-y-auto flex-grow bg-white relative -mt-8 rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+                
+                <div class="flex justify-end -mt-12 mb-4 relative z-10">
+                    <button onclick="window.readContent()" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm transition active:scale-95 border-2 border-orange-400">
                         <span>🔊</span> <span id="btn-read">Baca</span>
                     </button>
                 </div>
 
-                <div class="prose prose-slate max-w-none mb-8">
-                    <p id="modal-content" class="text-lg leading-relaxed text-slate-700"></p>
+                <!-- Fakta Poin -->
+                <div class="space-y-4 mb-8">
+                    <h3 id="fact-header" class="font-bold text-lg text-slate-700 border-b-2 border-slate-100 pb-1 inline-block">Fakta Menarik:</h3>
+                    <ul id="modal-content-list" class="space-y-3 text-slate-600 leading-relaxed font-medium">
+                        <!-- List items injected via JS -->
+                    </ul>
                 </div>
 
-                <div class="bg-slate-50 border-2 border-slate-100 rounded-2xl p-5">
+                <!-- Kuis -->
+                <div class="bg-slate-50 border-2 border-slate-100 rounded-2xl p-5 shadow-inner">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="bg-green-100 text-green-600 p-1.5 rounded-lg">❓</span>
-                        <h3 id="quiz-header" class="font-bold text-slate-700">Kuis Pintar</h3>
+                        <span class="bg-green-100 text-green-600 p-1.5 rounded-lg text-xl">🧠</span>
+                        <h3 id="quiz-header" class="font-bold text-slate-700 text-lg">Kuis Pintar</h3>
                     </div>
-                    <p id="quiz-question" class="font-medium text-slate-800 mb-3 text-base">Pertanyaan...</p>
+                    <p id="quiz-question" class="font-bold text-slate-800 mb-4 text-base">Pertanyaan...</p>
                     <div id="quiz-options" class="grid grid-cols-1 gap-2"></div>
-                    <div id="quiz-feedback" class="mt-3 text-center font-bold text-sm hidden"></div>
+                    <div id="quiz-feedback" class="mt-4 p-3 rounded-xl text-center font-bold text-sm hidden animate-pulse"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- BACKGROUND MUSIC -->
     <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_c44f4c8114.mp3?filename=happy-kids-124837.mp3" type="audio/mpeg">
     </audio>
 
-    <script>
-        // --- DATABASE BILINGUAL ---
+    <script type="module">
+        // --- DATABASE 100 FAKTA SAINS ---
         const categories = {
-            antariksa: { icon: '🪐', color: 'bg-indigo-100', border: 'border-indigo-200', id: 'Antariksa', en: 'Space' },
-            hewan: { icon: '🦁', color: 'bg-orange-100', border: 'border-orange-200', id: 'Hewan', en: 'Animals' },
-            tubuh: { icon: '🧠', color: 'bg-rose-100', border: 'border-rose-200', id: 'Tubuh', en: 'Body' },
-            alam: { icon: '🌋', color: 'bg-emerald-100', border: 'border-emerald-200', id: 'Alam', en: 'Nature' }
+            antariksa: { icon: '🪐', color: 'bg-indigo-100', border: 'border-indigo-200', header: 'bg-indigo-200', id: 'Antariksa', en: 'Space' },
+            hewan: { icon: '🦁', color: 'bg-orange-100', border: 'border-orange-200', header: 'bg-orange-200', id: 'Hewan', en: 'Animals' },
+            tubuh: { icon: '🧠', color: 'bg-rose-100', border: 'border-rose-200', header: 'bg-rose-200', id: 'Tubuh', en: 'Body' },
+            alam: { icon: '🌋', color: 'bg-emerald-100', border: 'border-emerald-200', header: 'bg-emerald-200', id: 'Alam', en: 'Nature' }
         };
 
-        // Data Manual (Sample) - Bisa ditambah
+        // Data Manual (Sample)
         const manualData = [
             {
                 id: 1, cat: 'antariksa', emoji: "☀️",
-                id_data: { title: "Matahari", content: "Matahari adalah bintang raksasa yang sangat panas. Dia terbuat dari gas yang terbakar. Tanpa Matahari, Bumi akan menjadi gelap dan beku.", q: "Matahari sebenarnya adalah...", opts: ["Planet", "Bintang", "Batu"], ans: 1 },
-                en_data: { title: "The Sun", content: "The Sun is a giant star that is very hot. It is made of burning gas. Without the Sun, Earth would be dark and frozen.", q: "The Sun is actually a...", opts: ["Planet", "Star", "Rock"], ans: 1 }
+                id_data: { title: "Matahari", content: "Matahari adalah bintang raksasa yang sangat panas. Dia terbuat dari gas yang terbakar. Tanpa Matahari, Bumi akan menjadi gelap dan beku.", list: ["Matahari adalah bintang raksasa panas.", "Terbuat dari gas yang terbakar.", "Memberikan cahaya dan panas untuk Bumi."], quiz: { q: "Matahari sebenarnya adalah...", opts: ["Sebuah Planet", "Sebuah Bintang", "Batu Besar"], ans: 1 } },
+                en_data: { title: "The Sun", content: "The Sun is a giant star that is very hot. It is made of burning gas. Without the Sun, Earth would be dark and frozen.", list: ["The Sun is a giant hot star.", "It is made of burning gas.", "It gives light and heat to Earth."], quiz: { q: "The Sun is actually a...", opts: ["Planet", "Star", "Rock"], ans: 1 } }
             },
             {
                 id: 2, cat: 'antariksa', emoji: "🌙",
-                id_data: { title: "Bulan", content: "Bulan tidak punya cahaya sendiri. Ia bersinar karena memantulkan cahaya Matahari. Di Bulan tidak ada udara untuk bernapas.", q: "Cahaya Bulan berasal dari?", opts: ["Bumi", "Lampu", "Matahari"], ans: 2 },
-                en_data: { title: "The Moon", content: "The Moon does not have its own light. It shines by reflecting light from the Sun. There is no air on the Moon to breathe.", q: "Moonlight comes from?", opts: ["Earth", "Lamp", "Sun"], ans: 2 }
+                id_data: { title: "Bulan", content: "Bulan tidak punya cahaya sendiri. Ia bersinar karena memantulkan cahaya Matahari. Di Bulan tidak ada udara untuk bernapas.", list: ["Bulan memantulkan cahaya Matahari.", "Tidak ada udara di Bulan.", "Bulan mengelilingi Bumi."], quiz: { q: "Cahaya Bulan berasal dari?", opts: ["Bumi", "Lampu", "Matahari"], ans: 2 } },
+                en_data: { title: "The Moon", content: "The Moon does not have its own light. It shines by reflecting light from the Sun. There is no air on the Moon to breathe.", list: ["The Moon reflects sunlight.", "There is no air on the Moon.", "The Moon orbits the Earth."], quiz: { q: "Moonlight comes from?", opts: ["Earth", "Lamp", "Sun"], ans: 2 } }
             },
             {
                 id: 6, cat: 'hewan', emoji: "🦒",
-                id_data: { title: "Jerapah", content: "Jerapah adalah hewan tertinggi. Lehernya panjang untuk makan daun di pohon tinggi. Uniknya, tulang lehernya cuma tujuh, sama seperti manusia!", q: "Apa makanan Jerapah?", opts: ["Daging", "Ikan", "Daun"], ans: 2 },
-                en_data: { title: "Giraffe", content: "Giraffes are the tallest animals. Their long necks help them eat leaves from tall trees. Surprisingly, they only have seven neck bones, just like humans!", q: "What do Giraffes eat?", opts: ["Meat", "Fish", "Leaves"], ans: 2 }
+                id_data: { title: "Jerapah", content: "Jerapah adalah hewan tertinggi. Lehernya panjang untuk makan daun di pohon tinggi. Uniknya, tulang lehernya cuma tujuh, sama seperti manusia!", list: ["Hewan tertinggi di dunia.", "Leher panjang untuk makan daun tinggi.", "Punya 7 tulang leher seperti manusia."], quiz: { q: "Apa makanan Jerapah?", opts: ["Daging", "Ikan", "Daun"], ans: 2 } },
+                en_data: { title: "Giraffe", content: "Giraffes are the tallest animals. Their long necks help them eat leaves from tall trees. Surprisingly, they only have seven neck bones, just like humans!", list: ["Tallest animal in the world.", "Long neck to eat high leaves.", "Has 7 neck bones like humans."], quiz: { q: "What do Giraffes eat?", opts: ["Meat", "Fish", "Leaves"], ans: 2 } }
             },
             {
                 id: 10, cat: 'tubuh', emoji: "❤️",
-                id_data: { title: "Jantung", content: "Jantungmu bekerja seperti pompa. Tugasnya memompa darah ke seluruh tubuh agar kita tetap hidup. 'Duk-duk' di dada itu suara jantungmu bekerja.", q: "Apa tugas jantung?", opts: ["Mencerna", "Memompa Darah", "Berpikir"], ans: 1 },
-                en_data: { title: "Heart", content: "Your heart works like a pump. Its job is to pump blood throughout your body to keep you alive. The 'thump-thump' in your chest is your heart working.", q: "What does the heart do?", opts: ["Digest", "Pump Blood", "Think"], ans: 1 }
-            },
-            {
-                id: 14, cat: 'alam', emoji: "🌈",
-                id_data: { title: "Pelangi", content: "Pelangi muncul saat sinar matahari menembus air hujan. Cahaya putih pecah menjadi 7 warna indah: Merah, Jingga, Kuning, Hijau, Biru, Nila, Ungu.", q: "Kapan pelangi muncul?", opts: ["Malam", "Hujan & Panas", "Badai"], ans: 1 },
-                en_data: { title: "Rainbow", content: "A rainbow appears when sunlight goes through raindrops. White light splits into 7 beautiful colors: Red, Orange, Yellow, Green, Blue, Indigo, Violet.", q: "When does a rainbow appear?", opts: ["Night", "Rain & Sun", "Storm"], ans: 1 }
+                id_data: { title: "Jantung", content: "Jantungmu bekerja seperti pompa. Tugasnya memompa darah ke seluruh tubuh agar kita tetap hidup. 'Duk-duk' di dada itu suara jantungmu bekerja.", list: ["Bekerja seperti pompa otomatis.", "Memompa darah ke seluruh tubuh.", "Berdetak siang dan malam."], quiz: { q: "Apa tugas jantung?", opts: ["Mencerna", "Memompa Darah", "Berpikir"], ans: 1 } },
+                en_data: { title: "Heart", content: "Your heart works like a pump. Its job is to pump blood throughout your body to keep you alive. The 'thump-thump' in your chest is your heart working.", list: ["Works like an automatic pump.", "Pumps blood to the whole body.", "Beats day and night."], quiz: { q: "What does the heart do?", opts: ["Digest", "Pump Blood", "Think"], ans: 1 } }
             }
         ];
 
-        // Generator 95 Data Tambahan (Bilingual)
+        // Generator Data Tambahan (Bilingual)
         const subjects = [
             { id_name: "Gajah", en_name: "Elephant", emoji: "🐘", cat: "hewan", id_trait: "sangat besar", en_trait: "very big" },
             { id_name: "Semut", en_name: "Ant", emoji: "🐜", cat: "hewan", id_trait: "sangat kuat", en_trait: "very strong" },
@@ -169,11 +175,13 @@
                 id_data: { 
                     title: `${s.id_name} #${i}`, 
                     content: `Tahukah kamu? ${s.id_name} itu unik karena ${s.id_trait}. Ini adalah fakta sains yang menarik.`, 
+                    list: [`${s.id_name} dikenal ${s.id_trait}.`, "Sangat menarik untuk dipelajari.", "Salah satu keajaiban alam."],
                     quiz: { q: `Apa ciri ${s.id_name}?`, opts: ["Tidak ada", s.id_trait, "Lainnya"], ans: 1 } 
                 },
                 en_data: { 
                     title: `${s.en_name} #${i}`, 
                     content: `Did you know? The ${s.en_name} is unique because it is ${s.en_trait}. This is an interesting science fact.`, 
+                    list: [`${s.en_name} is known to be ${s.en_trait}.`, "Very interesting to learn.", "One of nature's wonders."],
                     quiz: { q: `What is special about ${s.en_name}?`, opts: ["Nothing", s.en_trait, "Other"], ans: 1 } 
                 }
             });
@@ -182,7 +190,7 @@
         const database = [...manualData, ...generatedData];
 
         // --- STATE ---
-        let currentLang = 'id'; // 'id' or 'en'
+        let currentLang = 'id';
         let currentFilter = 'all';
         let currentSearch = '';
         let isMusicPlaying = false;
@@ -193,8 +201,8 @@
 
         // --- UI LABELS ---
         const labels = {
-            id: { title: "ENSIKLOPEDIA CILIK", sub: "Jelajahi 100 Fakta Dunia!", search: "Cari...", all: "Semua", antariksa: "Antariksa", hewan: "Hewan", tubuh: "Tubuh", alam: "Alam", read: "Baca", quiz: "Kuis Pintar", empty: "Wah, fakta itu belum ada.", correct: "🎉 Hebat! Benar!", wrong: "😅 Coba lagi ya!" },
-            en: { title: "LITTLE ENCYCLOPEDIA", sub: "Explore 100 World Facts!", search: "Search...", all: "All", antariksa: "Space", hewan: "Animals", tubuh: "Body", alam: "Nature", read: "Read", quiz: "Smart Quiz", empty: "Fact not found.", correct: "🎉 Great! Correct!", wrong: "😅 Try again!" }
+            id: { title: "ENSIKLOPEDIA CILIK", sub: "Jelajahi 100 Fakta Dunia!", search: "🔍 Cari...", all: "Semua", antariksa: "Antariksa", hewan: "Hewan", tubuh: "Tubuh", alam: "Alam", read: "Baca", quiz: "Kuis Pintar", empty: "Wah, fakta itu belum ada.", correct: "🎉 Hebat! Benar!", wrong: "😅 Coba lagi ya!", factHeader: "Fakta Menarik:" },
+            en: { title: "LITTLE ENCYCLOPEDIA", sub: "Explore 100 World Facts!", search: "🔍 Search...", all: "All", antariksa: "Space", hewan: "Animals", tubuh: "Body", alam: "Nature", read: "Read", quiz: "Smart Quiz", empty: "Fact not found.", correct: "🎉 Great! Correct!", wrong: "😅 Try again!", factHeader: "Fun Facts:" }
         };
 
         // --- INIT ---
@@ -204,12 +212,11 @@
             document.getElementById('search-bar-mobile').addEventListener('input', (e) => handleSearch(e.target.value));
         });
 
-        function toggleLanguage() {
+        window.toggleLanguage = function() {
             currentLang = currentLang === 'id' ? 'en' : 'id';
             const l = labels[currentLang];
             const isId = currentLang === 'id';
 
-            // Update UI Texts
             document.getElementById('lang-flag').textContent = isId ? '🇮🇩' : '🇬🇧';
             document.getElementById('lang-code').textContent = isId ? 'ID' : 'EN';
             document.getElementById('app-title').textContent = l.title;
@@ -223,14 +230,13 @@
             document.getElementById('btn-alam').innerHTML = `🌋 ${l.alam}`;
             document.getElementById('empty-msg').textContent = l.empty;
             
-            // Refresh content
             renderCards();
             if (!document.getElementById('detail-modal').classList.contains('hidden') && currentItem) {
-                openDetail(currentItem); // Refresh modal content
+                window.openDetail(currentItem);
             }
         }
 
-        function toggleMusic() {
+        window.toggleMusic = function() {
             const btn = document.getElementById('music-btn');
             const icon = document.getElementById('music-icon');
             if (isMusicPlaying) {
@@ -244,9 +250,9 @@
             isMusicPlaying = !isMusicPlaying;
         }
 
-        function handleSearch(val) { currentSearch = val.toLowerCase(); renderCards(); }
+        window.handleSearch = function(val) { currentSearch = val.toLowerCase(); renderCards(); }
 
-        function filterCategory(cat) {
+        window.filterCategory = function(cat) {
             currentFilter = cat;
             ['all', 'antariksa', 'hewan', 'tubuh', 'alam'].forEach(btn => {
                 document.getElementById(`btn-${btn}`).className = btn === cat ? "pill-active px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors" : "pill-inactive px-4 py-1.5 rounded-full border-2 text-xs font-bold whitespace-nowrap transition-colors";
@@ -254,13 +260,15 @@
             renderCards();
         }
 
-        function renderCards() {
+        window.renderCards = function() {
             const container = document.getElementById('cards-grid');
             container.innerHTML = '';
+            const term = (document.getElementById('search-bar').value || document.getElementById('search-bar-mobile').value).toLowerCase();
+            
             const filteredData = database.filter(item => {
                 const data = currentLang === 'id' ? item.id_data : item.en_data;
                 const matchCat = currentFilter === 'all' || item.cat === currentFilter;
-                const matchSearch = data.title.toLowerCase().includes(currentSearch);
+                const matchSearch = data.title.toLowerCase().includes(term);
                 return matchCat && matchSearch;
             });
 
@@ -275,12 +283,12 @@
                     
                     const div = document.createElement('div');
                     div.className = `bg-white rounded-2xl p-4 border-b-4 ${style.border} shadow-sm cursor-pointer card-hover flex items-center gap-4`;
-                    div.onclick = () => openDetail(item);
+                    div.onclick = () => window.openDetail(item);
                     
                     div.innerHTML = `
                         <div class="${style.color} w-16 h-16 rounded-2xl flex items-center justify-center text-4xl shrink-0">${item.emoji}</div>
-                        <div>
-                            <h3 class="font-judul text-lg text-slate-700 leading-tight">${data.title}</h3>
+                        <div class="min-w-0">
+                            <h3 class="font-judul text-lg text-slate-700 leading-tight truncate">${data.title}</h3>
                             <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider bg-slate-100 px-2 py-0.5 rounded-md mt-1 inline-block">${catName}</span>
                         </div>
                     `;
@@ -289,20 +297,25 @@
             }
         }
 
-        function openDetail(item) {
+        window.openDetail = function(item) {
             currentItem = item;
             const data = currentLang === 'id' ? item.id_data : item.en_data;
             const style = categories[item.cat];
             const catName = currentLang === 'id' ? style.id : style.en;
             const l = labels[currentLang];
 
-            document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('modal-emoji').textContent = item.emoji;
             document.getElementById('modal-title').textContent = data.title;
-            document.getElementById('modal-content').textContent = data.content;
             document.getElementById('modal-category').textContent = catName;
-            document.getElementById('btn-read').textContent = l.read;
+            document.getElementById('modal-header-bg').className = `relative ${style.color} p-6 pb-12 text-center transition-colors duration-500`;
+            
+            // Render Facts List
+            const listContainer = document.getElementById('modal-content-list');
+            listContainer.innerHTML = data.list.map(txt => `<li class="flex gap-3"><span class="text-sky-500 font-bold text-lg">•</span><span>${txt}</span></li>`).join('');
+            
+            document.getElementById('fact-header').textContent = l.factHeader;
             document.getElementById('quiz-header').textContent = l.quiz;
+            document.getElementById('btn-read').textContent = l.read;
             
             document.getElementById('quiz-question').textContent = data.quiz.q;
             const qContainer = document.getElementById('quiz-options');
@@ -311,60 +324,64 @@
 
             data.quiz.opts.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left p-3 rounded-xl border-2 border-slate-200 text-sm font-bold text-slate-600 hover:bg-sky-50 hover:border-sky-300 transition";
+                btn.className = "w-full text-left p-3 rounded-xl border-2 border-slate-200 text-sm font-bold text-slate-600 hover:bg-sky-50 hover:border-sky-300 transition active:scale-95";
                 btn.textContent = opt;
                 btn.onclick = () => checkAnswer(idx, data.quiz.ans, btn);
                 qContainer.appendChild(btn);
             });
+
+            document.getElementById('detail-modal').classList.remove('hidden');
         }
 
-        function closeModal() {
+        window.closeModal = function() {
             document.getElementById('detail-modal').classList.add('hidden');
-            synth.cancel();
+            window.speechSynthesis.cancel();
         }
 
-        function checkAnswer(selected, correct, btn) {
+        window.readContent = function() {
+            if (!currentItem) return;
+            if (isMusicPlaying) music.volume = 0.1;
+            window.speechSynthesis.cancel();
+            
+            const data = currentLang === 'id' ? currentItem.id_data : currentItem.en_data;
+            // Read intro + list facts
+            const textToRead = `${data.title}. ${data.list.join(". ")}`;
+            
+            const u = new SpeechSynthesisUtterance(textToRead);
+            u.lang = currentLang === 'id' ? 'id-ID' : 'en-US';
+            u.rate = 0.9;
+            
+            // Select voice
+            const voices = window.speechSynthesis.getVoices();
+            if (currentLang === 'en') {
+                u.voice = voices.find(v => v.lang.includes('en-US')) || null;
+            } else {
+                u.voice = voices.find(v => v.lang.includes('id-ID')) || null;
+            }
+
+            u.onend = () => { if (isMusicPlaying) music.volume = 0.3; };
+            window.speechSynthesis.speak(u);
+        }
+
+        function checkAnswer(sel, cor, btn) {
             const feedback = document.getElementById('quiz-feedback');
             const l = labels[currentLang];
             Array.from(document.getElementById('quiz-options').children).forEach(b => b.disabled = true);
             feedback.classList.remove('hidden');
             
-            if (selected === correct) {
-                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+            if (sel === cor) {
+                btn.className = "w-full text-left p-3 rounded-xl border-2 bg-green-100 border-green-500 text-green-700 font-bold text-sm";
                 feedback.textContent = l.correct;
                 feedback.className = "mt-3 text-center font-bold text-sm text-green-600 animate-bounce";
                 confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
             } else {
-                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                btn.className = "w-full text-left p-3 rounded-xl border-2 bg-red-100 border-red-500 text-red-700 font-bold text-sm";
                 feedback.textContent = l.wrong;
                 feedback.className = "mt-3 text-center font-bold text-sm text-red-500";
             }
         }
-
-        function readContent() {
-            if (!currentItem) return;
-            if (isMusicPlaying) music.volume = 0.1;
-            synth.cancel();
-            
-            const data = currentLang === 'id' ? currentItem.id_data : currentItem.en_data;
-            const u = new SpeechSynthesisUtterance(data.title + ". " + data.content);
-            
-            // Auto detect voice based on lang
-            const voices = synth.getVoices();
-            if (currentLang === 'en') {
-                u.lang = 'en-US';
-                u.voice = voices.find(v => v.lang.includes('en-US')) || null;
-            } else {
-                u.lang = 'id-ID';
-                u.voice = voices.find(v => v.lang.includes('id-ID')) || null;
-            }
-            
-            u.rate = 0.9;
-            u.onend = () => { if (isMusicPlaying) music.volume = 0.3; };
-            synth.speak(u);
-        }
         
-        // Preload voices
+        // Init voices
         window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 
     </script>
